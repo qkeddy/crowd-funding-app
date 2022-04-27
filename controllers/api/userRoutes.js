@@ -1,15 +1,15 @@
 // Initialize Express.js router object
-const router = require("express").Router();
+const router = require('express').Router();
 
 // Import references to the route models
-const { User } = require("../../models");
+const { User } = require('../../models');
 
 /** **************************************
  ** The `/api/user` endpoint
  *  **************************************/
 
 // POST to create a user
-router.post("/", async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         // Create a new user from the req.body post. The new userData is available
         // when a new user is successfully created from the user model.
@@ -31,14 +31,18 @@ router.post("/", async (req, res) => {
 });
 
 // POST to login a user
-router.post("/login", async (req, res) => {
+router.post('/login', async (req, res) => {
     try {
         // Find a user based upon the req.bod.email that was posted
-        const userData = await User.findOne({ where: { email: req.body.email } });
+        const userData = await User.findOne({
+            where: { email: req.body.email }
+        });
 
         // Is the email good? If not, let the user know with a generic email or password message
         if (!userData) {
-            res.status(400).json({ message: "Incorrect email or password, please try again" });
+            res.status(400).json({
+                message: 'Incorrect email or password, please try again'
+            });
             return;
         }
 
@@ -47,7 +51,9 @@ router.post("/login", async (req, res) => {
 
         // Is the password good? If not, let the user know with a generic email or password message
         if (!validPassword) {
-            res.status(400).json({ message: "Incorrect email or password, please try again" });
+            res.status(400).json({
+                message: 'Incorrect email or password, please try again'
+            });
             return;
         }
 
@@ -57,7 +63,7 @@ router.post("/login", async (req, res) => {
             req.session.logged_in = true;
 
             // Send back that the userData with a message
-            res.json({ user: userData, message: "You are now logged in!" });
+            res.json({ user: userData, message: 'You are now logged in!' });
         });
     } catch (err) {
         res.status(400).json(err);
@@ -65,8 +71,8 @@ router.post("/login", async (req, res) => {
 });
 
 // POST to logout a user
-router.post("/logout", (req, res) => {
-    // If logged in, then destory the session
+router.post('/logout', (req, res) => {
+    // If logged in, then destroy the session
     if (req.session.logged_in) {
         req.session.destroy(() => {
             res.status(204).end();
